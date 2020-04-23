@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    {% if message %}
+        <div class="alert alert-warning" role="alert">
+          <strong>Warning!</strong> {{ message }}
+        </div>
+    {% endif %}
+
+    {% if top_users %}
+        <h3 class="bg-light mt-5">Top Utilisateurs</h3>
+        <div class="row row-cols-1 row-cols-md-3">
+            <ol>
+                {% for top_user in top_users %}
+                    <li>
+                        <a href="{% url 'worker:profil' slug=top_user.slug %}">{{ top_user.username }}</a>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+    {% else %}
+        <p>No ads are available.</p>
+    {% endif %}
+
+    {% if last_supplies %}
+        <h3 class="bg-light">Dernières Offres</h3>
+        <div class="row row-cols-1 row-cols-md-3">
+            {% for last_supply in last_supplies %}
+                <div class="col mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url 'worker:detail' slug=last_supply.slug %}">{{ last_supply.title }}</a>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ last_supply.user }}</h6>
+                            <p class="card-text">{{ last_supply.description }}</p>
+                            <a href="{% url 'worker:detail' slug=last_supply.slug %}" class="card-link">En savoir plus</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No ads are available.</p>
+    {% endif %}
+
+    {% if last_demands %}
+        <h3 class="bg-light">Dernières Demandes</h3>
+        <div class="row row-cols-1 row-cols-md-3">
+            {% for last_demand in last_demands %}
+                <div class="col mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url 'worker:detail' slug=last_demand.slug %}">{{ last_demand.title }}</a>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ last_demand.user }}</h6>
+                            <p class="card-text">{{ last_demand.description }}</p>
+                            <a href="{% url 'worker:detail' slug=last_demand.slug %}" class="card-link">En savoir plus</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No ads are available.</p>
+    {% endif %}
+{% endblock %}

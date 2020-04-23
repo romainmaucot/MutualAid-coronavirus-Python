@@ -1,0 +1,13 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "Python - Django",
+            "Group": "Server Group - IPSSI",
+            "Port": 5432,
+            "Username": "ipssi",
+            "Host": "ipssi-postgres",
+            "MaintenanceDB": "postgres",
+            "SSLMode": "prefer"
+        }
+    }
+}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+
+{% block header %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <h2>Sign in</h2>
+
+    {% if message %}
+        <div class="alert alert-warning" role="alert">
+          <strong>Warning!</strong> {{ message }}
+        </div>
+    {% endif %}
+
+    <form method="post" class="form-group" id="signin_form">
+        {% csrf_token %}
+        {% for field in form %}
+        <div>
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% if field.help_text %}
+                <small style="color: grey">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+                <p style="color: #ff0000">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        <button type="submit">Sign in</button>
+    </form>
+{% endblock %}

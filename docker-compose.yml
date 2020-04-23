@@ -1,0 +1,78 @@
+version: '3.7'
+
+services:
+
+  ipssi-postgres:
+    container_name: ipssi-postgres
+    image: ipssi-postgres
+    restart: always
+    build:
+      context: ./
+      dockerfile: docker/postgres/Dockerfile
+      args:
+        POSTGRES_VERSION: 12-alpine
+    environment:
+        POSTGRES_DB: ipssi
+        POSTGRES_USER: ipssi
+        POSTGRES_PASSWORD: SuperSecret
+    ports:
+      - 30030:5432
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+
+  ipssi-python:
+    container_name: ipssi-python
+    image: ipssi-python
+    restart: always
+    tty: true
+    build:
+      context: ./
+      dockerfile: docker/python/Dockerfile
+      args:
+        PYTHON_VERSION: 3.8.2-slim-buster
+    expose:
+      - 8000
+    ports:
+      - 30031:8000
+    volumes:
+      - ./src:/var/www/ipssi.project.web
+    depends_on:
+      - ipssi-postgres
+
+  ipssi-pgadmin:
+    container_name: ipssi-pgadmin
+    image: ipssi-pgadmin
+    restart: always
+    build:
+      context: ./
+      dockerfile: docker/pgadmin/Dockerfile
+      args:
+        PGADMIN_VERSION: 4.18
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@domain.com
+      PGADMIN_DEFAULT_PASSWORD: SuperSecret
+      PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
+    ports:
+      - 30032:80
+
+  ipssi-portainer:
+    container_name: ipssi-portainer
+    image: ipssi-portainer
+    build:
+      context: ./
+      dockerfile: docker/portainer/Dockerfile
+      args:
+        PORTAINER_VERSION: 1.23.2
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    tty: true
+    ports:
+      - 30033:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - portainer:/data
+
+
+volumes:
+  portainer:
+  postgresql:

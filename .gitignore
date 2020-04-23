@@ -1,0 +1,10 @@
+.virtualenv
+.idea
+.DS_store
+/share/
+/src/jobboard/medias/
+/src/jobboard/.idea/
+/src/jobboard/staticfiles/
+/src/requirements.txt
+*.pyc
+*.mo

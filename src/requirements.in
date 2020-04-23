@@ -1,0 +1,5 @@
+# https://docs.djangoproject.com
+django==3.0.3
+
+# https://pypi.org/project/psycopg2-binary/
+psycopg2-binary

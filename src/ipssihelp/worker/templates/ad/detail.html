@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if ad %}
+        <h1>{{ ad.title }}</h1>
+        <p>Postée par:
+            <a href="{% url 'worker:profil' slug=ad.user.slug %}">
+                {{ ad.user.username}}
+            </a>
+            , le {{ ad.created | date:'d/m/Y à H:i'}}
+        </p>
+        <p>{{ ad.description }}</p>
+        <a class="btn btn-success text-white">Contacter</a>
+    {% else %}
+        <p>No ad are available.</p>
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}{% endblock %}

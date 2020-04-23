@@ -1,0 +1,21 @@
+1- pip-compile requirements.in
+2- pip install -r requirements.txt
+3- django-admin startproject ipssihelp
+
+4- cd ipssihelp
+
+5- python manage.py startapp worker
+
+6- Modifier le fichier settings.py
+
+7- python manage createsuperuser
+
+8- python manage.py migrate
+
+9- python manage.py runserver 0:8000
+
+10- Ajouter dans le fichier models.py vos class
+
+11- python manage.py makemigrations
+
+12- python manage.py migrate

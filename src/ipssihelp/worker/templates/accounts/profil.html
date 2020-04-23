@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+    <h2>{{ profil.first_name }} {{ profil.last_name }}</h2>
+    <p>Localisation: {{ profil.address.city}}, {{ profil.address.postal_code}}</p>
+
+
+    {% if user.slug == profil.slug %}
+        <a class="btn btn-primary text-white my-5" href="{% url 'worker:update_profil' slug=user.slug %}">
+            Modifer votre profil
+        </a>
+    {% endif %}
+
+
+    {% if demand_ads %}
+        <h3 class="bg-light">Demandes</h3>
+        <div class="row row-cols-1 row-cols-md-3">
+            {% for demand_ad in demand_ads %}
+                <div class="col mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url 'worker:detail' slug=demand_ad.slug %}">{{ demand_ad.title }}</a>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ demand_ad.user }}</h6>
+                            <p class="card-text">{{ demand_ad.description }}</p>
+                            <a href="{% url 'worker:detail' slug=demand_ad.slug %}" class="card-link">En savoir plus</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No ads are available.</p>
+    {% endif %}
+
+        {% if supply_ads %}
+        <h3 class="bg-light">Offres</h3>
+        <div class="row row-cols-1 row-cols-md-3">
+            {% for supply_ad in supply_ads %}
+                <div class="col mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url 'worker:detail' slug=supply_ad.slug %}">{{ supply_ad.title }}</a>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ supply_ad.user }}</h6>
+                            <p class="card-text">{{ supply_ad.description }}</p>
+                            <a href="{% url 'worker:detail' slug=supply_ad.slug %}" class="card-link">En savoir plus</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No offer are available.</p>
+    {% endif %}
+
+
+
+{% endblock %}

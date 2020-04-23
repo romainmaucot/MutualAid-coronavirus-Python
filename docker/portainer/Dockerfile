@@ -1,0 +1,3 @@
+ARG PORTAINER_VERSION
+
+FROM portainer/portainer:${PORTAINER_VERSION}
