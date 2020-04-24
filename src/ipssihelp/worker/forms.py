@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, Message
+from .models import User, Message, Conversation
 
 
 class SignupForm(UserCreationForm):
@@ -13,7 +13,12 @@ class SignupForm(UserCreationForm):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
 
-class UpdateForm(forms.ModelForm):
+class UpdateForm(forms.Form):
+    username = forms.CharField(required=True)
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    email = forms.EmailField(required=True)
+    gender = forms.CharField(required=True)
 
     class Meta:
         model = User
@@ -35,7 +40,12 @@ class SigninForm(forms.Form):
 class MessageForm(forms.ModelForm):
     content = forms.CharField(required=True, widget=forms.Textarea)
 
-
     class Meta:
         model = Message
         fields = ('content',)
+
+
+class ConversationForm(forms.Form):
+
+    class Meta:
+        model = Conversation

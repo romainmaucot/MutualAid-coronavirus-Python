@@ -34,7 +34,10 @@
         </p>
         <p>Localisation: {{ ad.user.address.city}}, {{ ad.user.address.postal_code}}</p>
         <p>{{ ad.description }}</p>
-        <a class="btn btn-success text-white">Contacter</a>
+        <form method="post" class="form-group" id="conversation_form">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success text-white">Contacter</button>
+        </form>
         {% endif %}
     {% else %}
         <p>No ad are available.</p>
