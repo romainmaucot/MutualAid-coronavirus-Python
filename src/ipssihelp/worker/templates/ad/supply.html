@@ -3,6 +3,10 @@
 {% block title %}Offres{% endblock %}
 
 {% block content %}
+    <form method="get" class="m-5">
+      <input type="text" id="search" placeholder="Rechercher" name="search">
+      <input type="submit" value="Submit">
+    </form>
     {% if supply_ads %}
         <h3 class="bg-light">Offres</h3>
         <div class="row row-cols-1 row-cols-md-3">
@@ -20,6 +24,23 @@
                     </div>
                 </div>
             {% endfor %}
+        </div>
+        <div class="pagination">
+            <span class="step-links">
+                {% if supply_ads.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ supply_ads.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ supply_ads.number }} of {{ supply_ads.paginator.num_pages }}.
+                </span>
+
+                {% if supply_ads.has_next %}
+                    <a href="?page={{ supply_ads.next_page_number }}">next</a>
+                    <a href="?page={{ supply_ads.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
         </div>
     {% else %}
         <p>No ads are available.</p>

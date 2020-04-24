@@ -34,10 +34,14 @@
         </p>
         <p>Localisation: {{ ad.user.address.city}}, {{ ad.user.address.postal_code}}</p>
         <p>{{ ad.description }}</p>
-        <form method="post" class="form-group" id="conversation_form">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success text-white">Contacter</button>
-        </form>
+            {% if user.is_authenticated %}
+            <form method="post" class="form-group" id="conversation_form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success text-white">Contacter</button>
+            </form>
+            {% else %}
+                <button type="submit" class="btn btn-success text-white" onclick="alert('Vous devez être connecté');">Contacter</button>
+            {% endif %}
         {% endif %}
     {% else %}
         <p>No ad are available.</p>

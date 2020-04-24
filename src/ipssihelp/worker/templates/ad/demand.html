@@ -3,6 +3,10 @@
 {% block title %}Demandes{% endblock %}
 
 {% block content %}
+    <form method="get" class="m-5">
+      <input type="text" id="search" placeholder="Rechercher" name="search">
+      <input type="submit" value="Submit">
+    </form>
     {% if demand_ads %}
         <h3 class="bg-light">Demandes</h3>
         <div class="row row-cols-1 row-cols-md-3">

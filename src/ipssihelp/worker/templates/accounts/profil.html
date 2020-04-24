@@ -6,16 +6,20 @@
     <h2>{{ profil.first_name }} {{ profil.last_name }}</h2>
     <p>Localisation: {{ profil.address.city}}, {{ profil.address.postal_code}}</p>
 
-
     {% if user.slug == profil.slug %}
         <a class="btn btn-primary text-white my-5" href="{% url 'worker:update_profil' slug=user.slug %}">
             Modifer votre profil
         </a>
     {% endif %}
-
+    <br>
 
     {% if demand_ads %}
         <h3 class="bg-light">Demandes</h3>
+        {% for conversation_list in conversations_demand %}
+            {% for conversation in conversation_list %}
+                <a href="{% url 'worker:conversation' id=conversation.id %}" class="btn btn-primary">Conversation {{conversation.id}}</a>
+            {% endfor %}
+        {% endfor %}
         <div class="row row-cols-1 row-cols-md-3">
             {% for demand_ad in demand_ads %}
                 <div class="col mb-4">
@@ -26,11 +30,10 @@
                             </h5>
                             <h6 class="card-subtitle mb-2 text-muted">{{ demand_ad.user }}</h6>
                             <p class="card-text">{{ demand_ad.description }}</p>
-                            <a href="{% url 'worker:detail' slug=demand_ad.slug %}" class="card-link">En savoir plus</a>
+                            <a href="{% url 'worker:detail' slug=demand_ad.slug %}" class="card-link">En savoir plus</a><br>
                         </div>
                     </div>
                 </div>
-
             {% endfor %}
         </div>
     {% else %}
@@ -39,6 +42,11 @@
 
         {% if supply_ads %}
         <h3 class="bg-light">Offres</h3>
+        {% for conversation_list in conversations_supply %}
+            {% for conversation in conversation_list %}
+                <a href="{% url 'worker:conversation' id=conversation.id %}" class="btn btn-primary">Conversation {{conversation.id}}</a>
+            {% endfor %}
+        {% endfor %}
         <div class="row row-cols-1 row-cols-md-3">
             {% for supply_ad in supply_ads %}
                 <div class="col mb-4">

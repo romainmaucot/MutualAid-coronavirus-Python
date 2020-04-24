@@ -31,10 +31,10 @@ class AddressInline(StackedInline):
 
 @admin.register(User)
 class UserAdmin(UserAdmin):
-    list_display = ('email', '_name', '_age', 'phone', '_address_full', 'is_staff', 'updated')
+    list_display = ('email', '_name', '_age', 'phone', '_address_full', 'is_staff', 'updated', 'username')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'username')}),
         (_('Permissions'), {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),

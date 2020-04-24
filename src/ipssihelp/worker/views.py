@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import SignupForm, SigninForm, UpdateForm, MessageForm, ConversationForm
 from .models import Ad, User, Conversation, Message
 from django.db.models import Count
+from django.core.paginator import Paginator
+from django.shortcuts import render
 
 
 
@@ -132,18 +134,42 @@ def signin(request):
     return redirect('worker:home')
 
 
+
 def supply(request):
+
     template = loader.get_template('ad/supply.html')
+    ad_list = Ad.objects.filter(type='supply')
+    paginator = Paginator(ad_list, 3)
+    page = request.GET.get('page')
+    ads = paginator.get_page(page)
+    search_term = ''
+    if 'search' in request.GET:
+        search_term = request.GET['search']
+        ad_list = Ad.objects.all().filter(title__contains=search_term, type='supply')
+        paginator = Paginator(ad_list, 3)
+        page = request.GET.get('page')
+        ads = paginator.get_page(page)
+        context = {
+            'supply_ads': ads
+        }
+        return HttpResponse(template.render(context, request))
     context = {
-        'supply_ads': Ad.objects.filter(type='supply', status__exact='online')
+        'supply_ads': ads
     }
     return HttpResponse(template.render(context, request))
 
 
+
 def demand(request):
     template = loader.get_template('ad/demand.html')
+    result = Ad.objects.filter(type='demand')
+    search_term = ''
+    if 'search' in request.GET:
+        search_term = request.GET['search']
+        result = Ad.objects.all().filter(title__contains=search_term, type='demand')
+
     context = {
-        'demand_ads': Ad.objects.filter(type='demand', status__exact='online')
+        "demand_ads": result
     }
     return HttpResponse(template.render(context, request))
 
@@ -219,16 +245,20 @@ def profil(request, slug):
     try:
         get_user = User.objects.get(slug=slug)
         demand_ads = Ad.objects.filter(user_id=get_user.id, type='demand', status__exact='online')
-        conversations: []
+        conversations_demand = []
         for demand_ad in demand_ads:
-            conversations = Conversation.objects.filter(ad_id=demand_ad.id)
+            conversations_demand.append(Conversation.objects.filter(ad_id=demand_ad.id))
 
         supply_ads = Ad.objects.filter(user_id=get_user.id, type='supply', status__exact='online')
+        conversations_supply = []
+        for supply_ad in supply_ads:
+            conversations_supply.append(Conversation.objects.filter(ad_id=supply_ad.id))
         context = {
             'profil': get_user,
             'demand_ads': demand_ads,
             'supply_ads': supply_ads,
-            'conversations': conversations
+            'conversations_demand': conversations_demand,
+            'conversations_supply': conversations_supply,
         }
     except ObjectDoesNotExist:
         context = {
