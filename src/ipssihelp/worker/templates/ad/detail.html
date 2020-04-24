@@ -3,14 +3,39 @@
 {% block content %}
     {% if ad %}
         <h1>{{ ad.title }}</h1>
+        {% if user.slug == ad.user.slug %}
+            <p>Vous avez postée cette annonce {{ ad.created | date:'d/m/Y à H:i'}}</p>
+            <p>{{ ad.description }}</p> <a class="btn btn-success text-white">Voir les missions</a>
+
+
+
+
+            {% if conversations %}
+                <h3 class="bg-light">Conversations liées</h3>
+                <div class="row row-cols-1 row-cols-md-3">
+                    {% for conversation in conversations %}
+                        <div class="col-lg-3 mb-4">
+                            <a class="btn btn-success text-white" href="{% url 'worker:conversation' id=conversation.id %}">
+                                Conversation {{ conversation.id }}
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Pas de conversation associées</p>
+            {% endif %}
+
+        {% else %}
         <p>Postée par:
             <a href="{% url 'worker:profil' slug=ad.user.slug %}">
                 {{ ad.user.username}}
             </a>
             , le {{ ad.created | date:'d/m/Y à H:i'}}
         </p>
+        <p>Localisation: {{ ad.user.address.city}}, {{ ad.user.address.postal_code}}</p>
         <p>{{ ad.description }}</p>
         <a class="btn btn-success text-white">Contacter</a>
+        {% endif %}
     {% else %}
         <p>No ad are available.</p>
     {% endif %}

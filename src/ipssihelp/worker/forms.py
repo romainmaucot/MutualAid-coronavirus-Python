@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User
+from .models import User, Message
 
 
 class SignupForm(UserCreationForm):
@@ -30,3 +30,12 @@ class SigninForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(SigninForm, self).__init__(*args, **kwargs)
+
+
+class MessageForm(forms.ModelForm):
+    content = forms.CharField(required=True, widget=forms.Textarea)
+
+
+    class Meta:
+        model = Message
+        fields = ('content',)

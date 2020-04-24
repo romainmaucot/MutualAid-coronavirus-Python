@@ -6,9 +6,8 @@ from django.shortcuts import redirect
 from django.template import loader
 from django.views.decorators.csrf import csrf_protect, requires_csrf_token
 from django.contrib.auth.decorators import login_required
-from .forms import SignupForm, SigninForm, UpdateForm
-from .models import Ad
-from .models import User
+from .forms import SignupForm, SigninForm, UpdateForm, MessageForm
+from .models import Ad, User, Conversation, Message
 from django.db.models import Count
 
 
@@ -57,15 +56,13 @@ def signup(request):
 
 @csrf_protect
 @requires_csrf_token
+@login_required
 def update_profil(request, slug):
     template = loader.get_template('accounts/update_profil.html')
     user = get_user(request)
     if user.slug == slug:
         if request.method == 'POST':
-            data = {
-                'email': user.email
-            }
-            form = UpdateForm(request.POST, initial=data)
+            form = UpdateForm(request.POST)
             form.has_changed()
             context = {
                 'form': form
@@ -79,7 +76,10 @@ def update_profil(request, slug):
 
                 return HttpResponse(template.render(context, request))
         else:
-            form = UpdateForm()
+            data = {
+                'email': user.email
+            }
+            form = UpdateForm(initial=data)
             context = {
                 'form': form
             }
@@ -144,12 +144,53 @@ def detail(request, slug):
     template = loader.get_template('ad/detail.html')
     try:
         get_ad = Ad.objects.get(slug=slug)
+        get_conversations = Conversation.objects.filter(ad_id=get_ad.id).order_by('-created')
         context = {
-            'ad': get_ad
+            'ad': get_ad,
+            'conversations': get_conversations
         }
     except ObjectDoesNotExist:
         context = {
-            'ad': None
+            'ad': None,
+            'conversations': None
+        }
+
+    return HttpResponse(template.render(context, request))
+
+@csrf_protect
+@requires_csrf_token
+@login_required
+def conversation(request, id):
+    template = loader.get_template('ad/conversation.html')
+    id = int(id)
+    conversation = Conversation.objects.get(id=id)
+    try:
+        get_messages = Message.objects.filter(conversation_id=id).order_by('-created')
+        form = MessageForm()
+        message = Message()
+        if request.method == 'POST':
+            form = MessageForm(request.POST)
+            user = get_user(request)
+            message.sender = user
+            message.conversation = conversation
+            message.content = form.data["content"]
+            if form.is_valid():
+                message.save()
+                context = {
+                    'conversation': conversation,
+                    'messages': get_messages,
+                    'form': form,
+                }
+                return HttpResponse(template.render(context, request))
+        context = {
+            'conversation': conversation,
+            'messages': get_messages,
+            'form': form,
+        }
+    except ObjectDoesNotExist:
+        context = {
+            'conversation': None,
+            'messages': None
         }
 
     return HttpResponse(template.render(context, request))
@@ -163,7 +204,7 @@ def profil(request, slug):
         context = {
             'profil': get_user,
             'demand_ads': demand_ads,
-            'supply_ads': supply_ads
+            'supply_ads': supply_ads,
         }
     except ObjectDoesNotExist:
         context = {

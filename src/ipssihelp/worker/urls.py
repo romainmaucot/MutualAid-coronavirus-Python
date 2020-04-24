@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 app_name = 'worker'
@@ -13,5 +13,6 @@ urlpatterns = [
     path('account/signin/', views.signin, name='signin'),
     path('account/update/<slug:slug>/', views.update_profil, name='update_profil'),
     path("logout", views.logout, name="logout"),
+    re_path(r'conversation/(?P<id>[\w-]+)/$', views.conversation, name='conversation'),
 ]
 

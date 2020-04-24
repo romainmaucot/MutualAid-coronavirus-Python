@@ -16,6 +16,7 @@
                 {% for top_user in top_users %}
                     <li>
                         <a href="{% url 'worker:profil' slug=top_user.slug %}">{{ top_user.username }}</a>
+                        <span class="badge badge-pill badge-primary float-right">{{ top_user.num_ads }}</span>
                     </li>
                 {% endfor %}
             </ol>

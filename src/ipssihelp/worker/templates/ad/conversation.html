@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+        <h3 class="bg-light mt-5">Conversation crée le {{conversation.created | date:'d/m/Y à H:i'}}</h3>
+
+        <form method="post" class="form-group" id="message_form">
+        {% csrf_token %}
+        <input type='text' name="content" placeholder="Votre message" />
+        <button type="submit">Envoyer le message</button>
+    </form>
+    {% if messages %}
+            {% for message in messages %}
+                <div class="mx-5">
+                    {% if message.sender_id == user.id %}
+                        <div class="text-right bg-primary text-white p-4">
+                            <p>{{ message.content}}</p>
+                        </div>
+                    {% else %}
+                        <div class="text-left bg-light p-4">
+                            <p>{{ message.content}}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+
+
+    {% else %}
+        <p>Aucun message</p>
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}{% endblock %}
