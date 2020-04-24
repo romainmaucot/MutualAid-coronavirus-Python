@@ -270,6 +270,10 @@ class Mission(models.Model):
         null=False,
         verbose_name=_('User')
     )
+    accepted = models.BooleanField(
+        default=False
+    )
+
     ad = models.ForeignKey(
         'Ad',
         on_delete=models.PROTECT,

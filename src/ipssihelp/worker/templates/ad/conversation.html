@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+        {% if mission %}
+        <h3 class="text-success mt-3">Mission acceptée !</h3>
+        {% else %}
             <form method="post" class="form-group" id="mission_form">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-success text-white">Accepter la mission</button>
             </form>
+        {% endif %}
     <h3 class="bg-light mt-5">Conversation crée le {{conversation.created | date:'d/m/Y à H:i'}}</h3>
 
     <form method="post" class="form-group" id="message_form">

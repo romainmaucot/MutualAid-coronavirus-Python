@@ -187,15 +187,18 @@ def detail(request, slug):
     try:
         get_ad = Ad.objects.get(slug=slug)
         get_conversations = Conversation.objects.filter(ad_id=get_ad.id).order_by('-created')
+        get_missions = Mission.objects.filter(ad_id=get_ad.id).order_by('-created')
         context = {
             'ad': get_ad,
+            'missions': get_conversations,
             'conversations': get_conversations,
             'form': form
         }
     except ObjectDoesNotExist:
         context = {
             'ad': None,
-            'conversations': None
+            'conversations': None,
+            'missions': None
         }
 
     return HttpResponse(template.render(context, request))
@@ -213,12 +216,13 @@ def conversation(request, id):
         form_mission = MissionForm(request.POST)
         ad = conversation.ad
         customer = get_user(request)
-        mission = Mission.objects.create(ad=ad, customer=customer)
+        mission = Mission.objects.create(ad=ad, customer=customer, accepted=True)
         if form_mission.is_valid():
             mission.save()
             return redirect('worker:conversation', id=id)
     try:
         get_messages = Message.objects.filter(conversation_id=id).order_by('-created')
+        mission = Mission.objects.filter(ad_id=conversation.ad.id)
         form = MessageForm()
         message = Message()
         if request.method == 'POST':
@@ -233,19 +237,22 @@ def conversation(request, id):
                     'conversation': conversation,
                     'messages': get_messages,
                     'form': form,
-                    'form_mission': form_mission
+                    'form_mission': form_mission,
+                    'mission': mission
                 }
                 return HttpResponse(template.render(context, request))
         context = {
             'conversation': conversation,
             'messages': get_messages,
             'form': form,
-            'form_mission': form_mission
+            'form_mission': form_mission,
+            'mission': mission
         }
     except ObjectDoesNotExist:
         context = {
             'conversation': None,
-            'messages': None
+            'messages': None,
+            'mission': None
         }
 
     return HttpResponse(template.render(context, request))
