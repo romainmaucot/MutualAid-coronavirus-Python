@@ -6,8 +6,8 @@ from django.shortcuts import redirect
 from django.template import loader
 from django.views.decorators.csrf import csrf_protect, requires_csrf_token
 from django.contrib.auth.decorators import login_required
-from .forms import SignupForm, SigninForm, UpdateForm, MessageForm, ConversationForm
-from .models import Ad, User, Conversation, Message
+from .forms import SignupForm, SigninForm, UpdateForm, MessageForm, ConversationForm, MissionForm
+from .models import Ad, User, Conversation, Message, Mission
 from django.db.models import Count
 from django.core.paginator import Paginator
 from django.shortcuts import render
@@ -208,6 +208,15 @@ def conversation(request, id):
     template = loader.get_template('ad/conversation.html')
     id = int(id)
     conversation = Conversation.objects.get(id=id)
+    form_mission = MissionForm()
+    if request.method == 'POST':
+        form_mission = MissionForm(request.POST)
+        ad = conversation.ad
+        customer = get_user(request)
+        mission = Mission.objects.create(ad=ad, customer=customer)
+        if form_mission.is_valid():
+            mission.save()
+            return redirect('worker:conversation', id=id)
     try:
         get_messages = Message.objects.filter(conversation_id=id).order_by('-created')
         form = MessageForm()
@@ -224,12 +233,14 @@ def conversation(request, id):
                     'conversation': conversation,
                     'messages': get_messages,
                     'form': form,
+                    'form_mission': form_mission
                 }
                 return HttpResponse(template.render(context, request))
         context = {
             'conversation': conversation,
             'messages': get_messages,
             'form': form,
+            'form_mission': form_mission
         }
     except ObjectDoesNotExist:
         context = {

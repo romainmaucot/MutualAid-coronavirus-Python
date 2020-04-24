@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, Message, Conversation
+from .models import User, Message, Conversation, Mission
 
 
 class SignupForm(UserCreationForm):
@@ -49,3 +49,9 @@ class ConversationForm(forms.Form):
 
     class Meta:
         model = Conversation
+
+
+class MissionForm(forms.Form):
+
+    class Meta:
+        model = Mission
